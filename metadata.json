@@ -1,0 +1,5 @@
+{
+  "name": "SceneLingo AI",
+  "description": "Learn languages through AI-generated immersive scenes. Generate, play, and share interactive vocabulary cards.",
+  "requestFramePermissions": ["microphone"]
+}
