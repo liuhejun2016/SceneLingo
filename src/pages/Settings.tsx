@@ -279,6 +279,13 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+const PRESET_COLORS = [
+  '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', 
+  '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', 
+  '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#f43f5e', '#ffffff', 
+  '#a1a1aa', '#3f3f46', '#000000'
+];
+
 function ColorPicker({ 
   label, 
   value, 
@@ -296,7 +303,7 @@ function ColorPicker({
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-zinc-400">{label}</label>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <div className="flex gap-2">
           <input 
             type="color" 
@@ -308,18 +315,41 @@ function ColorPicker({
                 onChange(e.target.value);
               }
             }}
-            className="w-10 h-10 rounded cursor-pointer bg-transparent"
+            className="w-10 h-10 rounded cursor-pointer bg-transparent shrink-0"
           />
           <input 
             type="text" 
             value={value}
             onChange={e => onChange(e.target.value)}
-            className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-2 text-sm text-white focus:outline-none focus:border-indigo-500"
+            className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 text-sm text-white focus:outline-none focus:border-indigo-500"
           />
         </div>
+        
+        {/* Preset Color Palette */}
+        <div className="flex flex-wrap gap-1.5">
+          {PRESET_COLORS.map(color => (
+            <button
+              key={color}
+              type="button"
+              className={`w-6 h-6 rounded-md border-2 transition-transform hover:scale-110 ${
+                hex.toLowerCase() === color ? 'border-indigo-500 scale-110' : 'border-transparent'
+              }`}
+              style={{ backgroundColor: color }}
+              onClick={() => {
+                if (allowAlpha) {
+                  onChange(hexToRgba(color, alpha));
+                } else {
+                  onChange(color);
+                }
+              }}
+              title={color}
+            />
+          ))}
+        </div>
+
         {allowAlpha && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-500 w-12">Opacity</span>
+          <div className="flex items-center gap-3 bg-zinc-900/50 p-2 rounded-lg border border-zinc-800/50">
+            <span className="text-xs font-medium text-zinc-400 w-12">Opacity</span>
             <input 
               type="range" 
               min="0" 
@@ -329,9 +359,9 @@ function ColorPicker({
               onChange={e => {
                 onChange(hexToRgba(hex, parseFloat(e.target.value)));
               }}
-              className="flex-1 accent-indigo-500"
+              className="flex-1 accent-indigo-500 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
             />
-            <span className="text-xs text-zinc-500 w-8 text-right">{Math.round(alpha * 100)}%</span>
+            <span className="text-xs font-medium text-zinc-400 w-9 text-right">{Math.round(alpha * 100)}%</span>
           </div>
         )}
       </div>
